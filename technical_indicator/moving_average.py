@@ -1,3 +1,5 @@
+import numpy as np
+
 
 def sma(df, days, col="Close", start=0):
     """
@@ -6,9 +8,9 @@ def sma(df, days, col="Close", start=0):
     :param days: days to calculate ema
     :param col: Data frame column use for calculating ema
     :param start: start day
-    :return:
+    :return: Existing Data frame with additional exponential moving average column
     """
-    df['{}days_sma'.format(days)] = ""
+    df['{}days_sma'.format(days)] = np.nan
     if df.shape[0] > days:
         for i in range(days, (df.shape[0] + 1)):
             df['{}days_sma'.format(days)][i - 1] = df.iloc[start:i, df.columns.get_loc(col)].sum(axis=0) / days
@@ -26,12 +28,12 @@ def ema(df, days, col="Close", start=0):
     :param days: days to calculate ema
     :param col: Data frame column use for calculating ema
     :param start: start day
-    :return:
+    :return: Existing Data frame with additional exponential moving average column
     """
     if df.shape[0] > days:
         multiplier = 2 / (days + 1)
         first_ema = df.iloc[:days, df.columns.get_loc(col)].sum(axis=0) / days
-        df['{}days_ema'.format(days)] = ""
+        df['{}days_ema'.format(days)] = np.nan
         df['{}days_ema'.format(days)][days - 1] = first_ema
         for i in range(days, (df.shape[0])):
             EMA = df.iloc[i, df.columns.get_loc(col)] * multiplier + df.iloc[
@@ -39,8 +41,6 @@ def ema(df, days, col="Close", start=0):
             df['{}days_ema'.format(days)][i] = EMA
             df['{}days_ema'.format(days)][i] = EMA
             start = start+1
+        # df['{}days_ema'.format(days)] = df['{}days_ema'.format(days)].astype(float)
     else:
         print("Not Sufficient data")
-
-
-
